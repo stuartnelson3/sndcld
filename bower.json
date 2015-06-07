@@ -1,0 +1,32 @@
+{
+  "name": "sndcld",
+  "version": "0.0.1",
+  "authors": [
+    "Stuart Nelson <stuartnelson3@gmail.com>"
+  ],
+  "description": "soundcloud redesigned + react",
+  "main": "main.go",
+  "moduleType": [
+    "es6",
+    "globals"
+  ],
+  "keywords": [
+    "react",
+    "soundcloud"
+  ],
+  "license": "MIT",
+  "homepage": "http://github.com/stuartnelson3/sndcld",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "plangular": "~3.1.0",
+    "angular": "~1.4.0",
+    "basscss": "~6.1.6",
+    "angular-route": "~1.4.0"
+  }
+}
