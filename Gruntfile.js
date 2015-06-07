@@ -36,7 +36,7 @@ module.exports = function(grunt) {
       all: {
         src: [
           'bower_components/basscss/css/basscss.css',
-          'public/css/**/*.css'
+          'public/css/*.css'
         ],
         dest: 'public/application.css'
       },
