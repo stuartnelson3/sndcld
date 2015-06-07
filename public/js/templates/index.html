@@ -1,9 +1,11 @@
-<header class="header z2 fixed top-0 left-0 right-0 white bg-blue">
+<header class="header z3 fixed top-0 left-0 right-0 white bg-blue">
   <input class="sm-col-10 md-col-8 m1 field-light search-input" ng-model="searchText" ng-keyup="searchSC($event, searchText)" placeholder="Search" type="text">
+  <i class="fa fa-bars fa-3 absolute right-0 m2 m2" ng-click="sidebarActive = !sidebarActive"></i>
 </header>
 
-<div class="clearfix mxn2">
-  <div class="sm-col-10 md-col-8 mx-auto border search-container">
+<div class="flex-auto sm-flex search-container">
+  <main class="clearfix mxn2 flex-auto">
+  <div class="sm-col-10 md-col-8 mx-auto border">
     <div class="song-container px1 bg-white border-bottom" ng-repeat="s in songs track by $index">
       <div plangular="{{s.permalink_url}}" class="py2">
         <div class="relative bg-silver" style="height:4rem;">
@@ -30,4 +32,26 @@
       </div>
     </div>
   </div>
+  </main>
+  <aside ng-class="{active: sidebarActive}" class="sidebar absolute px2">
+    <p>Playlists</p>
+    <ul class="list-reset">
+      <li>
+        <i class="fa fa-file-archive-o"></i>
+        Thing one
+      </li>
+      <li>
+        <i class="fa fa-file-archive-o"></i>
+        Thing one
+      </li>
+      <li>
+        <i class="fa fa-file-archive-o"></i>
+        Thing one
+      </li>
+      <li>
+        <i class="fa fa-file-archive-o"></i>
+        Thing one
+      </li>
+    </ul>
+  </aside>
 </div>

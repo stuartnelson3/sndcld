@@ -15,3 +15,14 @@ body {
 .song-container {
   box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
 }
+
+
+.sidebar {
+  transition: right 0.5s;
+  width: 12em;
+  right: -14em;
+}
+
+.sidebar.active {
+  right: 0;
+}
