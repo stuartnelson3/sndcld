@@ -1,4 +1,4 @@
-angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$http', function($scope, $http) {
+angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$http', 'MixTape', function($scope, $http, MixTape) {
   var soundcloudUrl = location.protocol + '//api.soundcloud.com/tracks';
 
   var search = function(query) {
@@ -33,5 +33,11 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
   };
 
   $scope.searchSC({keyCode: 13}, 'moderat');
+
+  $scope.addToMixTape = function(track) {
+    MixTape.add(track);
+  };
+
+  $scope.MixTape = MixTape;
 
 }]);
