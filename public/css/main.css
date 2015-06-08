@@ -26,3 +26,7 @@ body {
 .sidebar.active {
   right: 0;
 }
+
+.pointer {
+  cursor: pointer;
+}

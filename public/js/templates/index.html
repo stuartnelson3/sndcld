@@ -1,13 +1,13 @@
 <header class="header z3 fixed top-0 left-0 right-0 white bg-blue">
   <input class="sm-col-10 md-col-8 m1 field-light search-input" ng-model="searchText" ng-keyup="searchSC($event, searchText)" placeholder="Search" type="text">
-  <i class="fa fa-bars fa-3 absolute right-0 m2 m2" ng-click="sidebarActive = !sidebarActive"></i>
+  <i class="fa fa-bars fa-3 absolute right-0 p2 pointer" ng-click="sidebarActive = !sidebarActive"></i>
 </header>
 
 <div class="flex-auto sm-flex search-container">
   <main class="clearfix mxn2 flex-auto">
   <div class="sm-col-10 md-col-8 mx-auto border">
     <div class="song-container px1 bg-white border-bottom" ng-repeat="s in songs track by $index">
-      <div plangular="{{s.permalink_url}}" class="py2">
+      <div plangular="{{s.permalink_url}}" no-end="true" class="py2">
         <div class="relative bg-silver" style="height:4rem;">
           <div class="absolute top-0 bottom-0 left-0 bg-aqua"
             style="width:{{ 100 * (currentTime / duration) || 0 }}%"></div>
@@ -40,17 +40,17 @@
   </div>
   </main>
   <aside ng-class="{active: sidebarActive}" class="sidebar absolute px2">
-    <p>Playlists</p>
+    <p class="caps">Mixtape</p>
     <div plangular="">
-      <ul class="list-reset">
-        <li ng-repeat="track in tracks">
+      <ul class="list-reset mr1">
+        <li ng-repeat="track in tracks track by $index">
           <button
-            class="flex-none h4 mr1 button button-transparent button-grow rounded"
+            class="flex-none h4 button button-transparent button-grow rounded"
             title="Play {{track.title}}"
             ng-class="{'is-active': player.playing === track.src }"
             ng-click="playPause($index)">
-            <div>
-              <h3 class="h6 caps m0">{{track.user.username}}</h3>
+            <div class="left-align">
+              <h3 class=" h6 caps m0">{{track.user.username}}</h3>
               <h2 class="h4 caps m0">{{track.title}}</h2>
             </div>
           </button>
