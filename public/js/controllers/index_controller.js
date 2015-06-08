@@ -28,12 +28,16 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
 
     var promise;
 
-    // looking for user likes
-    var match = searchText.match(/likes:(.+)/);
-    if (match) {
-      promise = resolve({url: match[1].trim()+"/likes"});
-    } else {
-      promise = search(searchText);
+    // looking for user likes/tracks
+    var re = /(\w+):(.+)/;
+    var match = searchText.match(re);
+    switch (match[1]) {
+      case "likes":
+      case "tracks":
+        promise = resolve({url: match[2].trim()+"/"+match[1].trim()});
+        break;
+      default:
+        promise = search(searchText);
     }
 
     $scope.songs = [];
