@@ -1,10 +1,9 @@
 angular.module('sndcld.resources').factory('MixTape', [function() {
-  var tape = [];
+  var mt = function(tape) {
+    this.tape = tape || [];
+  };
 
-  return {
-    add: function(track) {
-      tape.push(track);
-    },
-    tape: tape
+  return function(tape) {
+    return new mt(tape);
   };
 }]);

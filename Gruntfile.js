@@ -12,6 +12,7 @@ module.exports = function(grunt) {
     watch: {
       files: [
         '<%= jshint.files %>',
+        'bower_components/plangular/dist/plangular.js',
         'public/css/**/*.css',
       ],
       tasks: ['concat', 'concat_css']

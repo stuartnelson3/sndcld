@@ -41,43 +41,29 @@
   </main>
   <aside ng-class="{active: sidebarActive}" class="sidebar absolute px2">
     <p>Playlists</p>
-    <ul class="list-reset">
-      <li ng-repeat="track in MixTape.tape">
-        <button
-          class="flex flex-center full-width left-align button button-transparent"
-          title="Play {{track.title}}"
-          ng-class="{'is-active': player.playing === track.src }"
-          ng-click="playPause($index)">
-          <span class="flex-auto">
-            {{track.user.username}} - {{track.title}}
-          </span>
-          <div class="flex-auto">
+    <div plangular="">
+      <ul class="list-reset">
+        <li ng-repeat="track in tracks">
+          <button
+            class="flex-none h4 mr1 button button-transparent button-grow rounded"
+            title="Play {{track.title}}"
+            ng-class="{'is-active': player.playing === track.src }"
+            ng-click="playPause($index)">
+            <div>
+              <h3 class="h6 caps m0">{{track.user.username}}</h3>
+              <h2 class="h4 caps m0">{{track.title}}</h2>
+            </div>
+          </button>
+          <div class="flex-auto" ng-show="player.playing === track.src">
             <progress
-              class="progress red"
+              class="progress aqua"
               ng-click="seek($event)"
               ng-value="currentTime / duration || 0">
               {{ currentTime / duration }}
             </progress>
           </div>
-        </button>
-      </li>
-    </ul>
-    <div plangular="http://soundcloud.com/mrsjxn/touch-this"
-      class="flex flex-center">
-      <button ng-click="playPause()"
-        title="Play/Pause"
-        class="flex-none h4 mr2 button button-transparent button-grow rounded">
-        <svg ng-if="player.playing !== track.src" class="icon geomicon" data-icon="play" viewBox="0 0 32 32" width="32" height="32" style="fill:currentcolor"><path d="M4 4 L28 16 L4 28 z "></path></svg>
-        <svg ng-if="player.playing === track.src" class="icon geomicon" data-icon="pause" viewBox="0 0 32 32" width="32" height="32" style="fill:currentcolor"><path d="M4 4 H12 V28 H4 z M20 4 H28 V28 H20 z "></path></svg>
-      </button>
-      <div class="flex-auto">
-        <progress
-          class="progress red"
-          ng-click="seek($event)"
-          ng-value="currentTime / duration || 0">
-          {{ currentTime / duration }}
-        </progress>
-      </div>
+        </li>
+      </ul>
     </div>
   </aside>
 </div>
