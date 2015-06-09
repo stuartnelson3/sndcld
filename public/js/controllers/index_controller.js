@@ -75,6 +75,11 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
     });
   };
 
+  $scope.searchUsername = function(userPermalink) {
+    $scope.searchText = 'tracks:'+userPermalink;
+    $scope.searchSC({keyCode: 13}, $scope.searchText);
+  };
+
 
   $scope.searchText = 'likes:stuartnelson3';
   $scope.searchSC({keyCode: 13}, $scope.searchText);
