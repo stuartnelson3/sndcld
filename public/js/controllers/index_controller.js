@@ -36,6 +36,28 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
       case "tracks":
         promise = resolve({url: match[2].trim()+"/"+match[1].trim()});
         break;
+      case "sets":
+        var m = match[2].match(re);
+        var user = match[2];
+        var path = match[1].trim();
+        var singleSet = false;
+        if (m) {
+           user = m[1];
+           if (m[2]) {
+             singleSet = true;
+             path += "/" + m[2].trim();
+           }
+        }
+        promise = resolve({url: user.trim()+"/"+path}).then(function(payload) {
+          var tracks;
+          if (singleSet) {
+            tracks = payload.data.tracks;
+          }
+          var ts = payload.data.map(function(set) { return set.tracks; });
+          tracks = [].concat.apply([], ts);
+          return {data: tracks};
+        });
+        break;
       default:
         promise = search(searchText);
     }
