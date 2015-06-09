@@ -49,12 +49,11 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
            }
         }
         promise = resolve({url: user.trim()+"/"+path}).then(function(payload) {
-          var tracks;
           if (singleSet) {
-            tracks = payload.data.tracks;
+            return {data: payload.data.tracks};
           }
           var ts = payload.data.map(function(set) { return set.tracks; });
-          tracks = [].concat.apply([], ts);
+          var tracks = [].concat.apply([], ts);
           return {data: tracks};
         });
         break;
