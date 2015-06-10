@@ -31,7 +31,7 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
     // looking for user likes/tracks
     var re = /(\w+):(.+)/;
     var match = searchText.match(re);
-    switch (match[1]) {
+    switch ((match||[])[1]) {
       case "likes":
       case "tracks":
         promise = resolve({url: match[2].trim()+"/"+match[1].trim()});
