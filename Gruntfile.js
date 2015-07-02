@@ -44,14 +44,14 @@ module.exports = function(grunt) {
     },
     go: {
       options:{
-        // GOPATH: [process.env.GOPATH]
-        GOPATH: ['../../../..'] // make this actually work :(
+        //GOPATH: [process.env.GOPATH]
+        GOPATH: ['../..'] // make this actually work :(
       },
       dev: {
         output: "sndcld",
         run_files: ["main.go"],
         run_flags: [
-          '--port', ':3000',
+          '--port', '3000',
           '--client-id', '1182e08b0415d770cfb0219e80c839e8',
         ]
       }
