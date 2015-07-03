@@ -88,7 +88,14 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
   };
 
   $scope.createSet = function() {
-    debugger
+    var url = '/create-set';
+    var data = {
+      title: $(".js-setTitle").text(),
+      tracks: $scope.tracks.map(function(t) { return t.id; })
+    };
+    $http.post(url, data).then(function(payload) {
+      debugger
+    });
   };
 
   $scope.songs = [];

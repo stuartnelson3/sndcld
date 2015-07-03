@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -12,6 +14,10 @@ import (
 	"github.com/gorilla/pat"
 	"github.com/gorilla/sessions"
 	"golang.org/x/oauth2"
+)
+
+var (
+	Version = "0.0.1"
 )
 
 func handleAuthorize(config *oauth2.Config, token string) http.HandlerFunc {
@@ -72,6 +78,47 @@ func getStream(store *sessions.CookieStore) http.HandlerFunc {
 	}
 }
 
+type playlist struct {
+	Title  string `json:"title"`
+	Tracks []int  `json:"tracks"`
+}
+
+func createSet(store *sessions.CookieStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		session, _ := store.Get(r, "sndcld")
+
+		t, ok := session.Values["token"]
+		if !ok {
+			http.Error(w, "no token in session", 500)
+		}
+
+		b := playlist{}
+		json.NewDecoder(r.Body).Decode(&b)
+
+		u := fmt.Sprintf("https://api.soundcloud.com/me/playlists?oauth_token=%s\n", t.(string))
+		values := map[string]playlist{
+			"playlist": b,
+		}
+		buf := new(bytes.Buffer)
+		err := json.NewEncoder(buf).Encode(values)
+		if err != nil {
+			http.Error(w, "failed to marshal json", 500)
+		}
+
+		bodyType := "application/x-www-form-urlencoded"
+		req, err := http.NewRequest("POST", u, buf)
+		req.Header.Set("Content-Type", bodyType)
+		// out, err := httputil.DumpRequestOut(req, true)
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			http.Error(w, "failed to create playlist", 500)
+		}
+		defer resp.Body.Close()
+
+		io.Copy(os.Stdout, resp.Body)
+	}
+}
+
 func main() {
 	var (
 		clientID      = flag.String("client-id", "", "soundcloud client id")
@@ -101,12 +148,13 @@ func main() {
 		http.ServeFile(w, r, r.URL.Path[1:])
 	})
 
+	m.Post("/create-set", createSet(store))
 	m.Get("/stream", getStream(store))
 	m.Get("/oauth2callback", handleOAuth2Callback(store, config, *callbackToken))
 	m.Post("/authorize", handleAuthorize(config, *callbackToken))
 	m.Get("/", index(*clientID))
 
 	handler := handlers.CompressHandler(handlers.LoggingHandler(os.Stdout, m))
-	log.Printf("Listening on %s\n", *port)
+	log.Printf("api %s listening on %s\n", Version, *port)
 	log.Fatal(http.ListenAndServe(":"+*port, handler))
 }
