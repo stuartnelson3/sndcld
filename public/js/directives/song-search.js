@@ -31,6 +31,9 @@ angular.module('sndcld.directives').directive("songSearch", ['$http', function($
           song.url = song.stream_url + "?client_id=" + this.client_id;
         });
         $scope.songs = songs;
+        if (songs.length === 0) {
+         $scope.song.empty = true;
+        }
       });
 
     },
