@@ -23,6 +23,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: [
+          'bower_components/jquery/dist/jquery.js',
           'bower_components/angular/angular.js',
           'bower_components/angular-route/angular-route.js',
           'bower_components/plangular/dist/plangular.js',

@@ -1,4 +1,4 @@
-angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$http', '$window', '$timeout', function($scope, $http, $window, $timeout) {
+angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$http', '$window', '$timeout', '$document', function($scope, $http, $window, $timeout, $document) {
   var soundcloudUrl = location.protocol + '//api.soundcloud.com/tracks';
 
   $scope.login = function() {
@@ -143,12 +143,20 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
 
   // $scope.searchText = 'likes:stuartnelson3';
   // $scope.searchSC({keyCode: 13}, $scope.searchText);
-  $scope.getStream();
+  // $scope.getStream();
 
   $scope.addToMixTape = function(track) {
     $scope.tracks.push(track);
   };
 
   $scope.tracks = [];
+
+  $scope.$on('csvUpload', function(e, tracks) {
+    debugger
+    // create a new search object for each track, each track has it's own
+    // resultant tracks and those are what get displayed with the search as the
+    // header
+    // tracks.forEach
+  });
 
 }]);

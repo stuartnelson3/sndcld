@@ -9,6 +9,7 @@
     <div class="sm-col-10 md-col-8 mx-auto">
       <!-- <h3 class="h6 caps m2 inline&#45;block pointer gray">hello</h3> -->
       <div class="border">
+        <drop-zone ng-if="songs.length === 0"></drop-zone>
         <div class="song-container px1 bg-white border-bottom" ng-repeat="s in songs track by $index">
           <div plangular="{{s.permalink_url}}" no-end="true" class="py2">
             <div class="relative bg-silver" style="height:4rem;">
