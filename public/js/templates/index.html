@@ -12,8 +12,11 @@
       </div>
 
       <div ng-repeat="s in playlist track by $index">
-        <h3 class="h6 caps m2 inline-block pointer gray">{{s.artist}} &mdash; {{s.title}}</h3>
-        <div class="border">
+        <h3 class="h6 caps m2 inline-block pointer"
+          ng-click="s.hide = !s.hide;"
+          ng-class="{'black': s.hide, 'gray': !s.hide}"
+          >{{$index+1 }}. {{s.artist}} &mdash; {{s.title}}</h3>
+        <div class="border" ng-hide="s.hide">
           <song-search song="::s" tracks="tracks"></song-search>
         </div>
       </div>
