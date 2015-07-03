@@ -53,13 +53,13 @@ dependencies: $(SRC)
 $(TGT): $(GOCC) $(SRC) dependencies
 	$(GO) build $(LDFLAGS) -v -o $(TGT)
 
-public/application.css: public/vendor $(shell find public/css -type f)
+public/application.css: bower_components $(shell find public/css -type f)
 	$(GRUNT) cssmin
 
-public/application.js: public/vendor $(shell find public/js -type f)
+public/application.js: bower_components $(shell find public/js -type f)
 	$(GRUNT) uglify
 
-public/vendor: node_modules bower.json
+bower_components: node_modules bower.json
 	$(BOWER) install --allow-root
 	@touch $@
 
