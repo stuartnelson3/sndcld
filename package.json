@@ -1,9 +1,10 @@
 {
   "name": "sndcld",
   "version": "0.0.1",
-  "description": "soundcloud redesigned + angular",
+  "description": "soundcloud import + angular",
   "main": "Gruntfile.js",
   "devDependencies": {
+    "bower": "^1.4.1",
     "grunt-browserify": "^3.8.0",
     "grunt-concat-css": "0.3.1",
     "grunt-contrib-concat": "0.5.0",
@@ -26,16 +27,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/stuartnelson3/react-cloud.git"
+    "url": "https://github.com/soundcloud/importcloud.git"
   },
   "keywords": [
-    "soundcloud",
-    "react"
+    "soundcloud"
   ],
   "author": "stuart nelson <stuartnelson3@github.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/stuartnelson3/sndcld/issues"
+    "url": "https://github.com/soundcloud/importcloud/issues"
   },
-  "homepage": "https://github.com/stuartnelson3/sndcld"
+  "homepage": "https://github.com/soundcloud/importcloud"
 }
