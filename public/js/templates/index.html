@@ -25,7 +25,10 @@
     </div>
   </main>
   <aside ng-class="{active: sidebarActive}" class="sidebar fixed px2">
-    <p class="caps">Mixtape</p>
+    <p>
+      <span class="caps mr1" contenteditable class="js-setTitle">Mixtape</span>
+      <i class="fa fa-soundcloud pointer" ng-click="createSet()"></i>
+    </p>
     <div plangular="">
       <ul class="list-reset mr1">
         <li ng-repeat="track in tracks track by $index">
@@ -35,7 +38,9 @@
             ng-class="{'is-active': player.playing === track.src }"
             ng-click="playPause($index)">
             <div class="left-align">
-              <h3 class=" h6 caps m0">{{track.user.username}}</h3>
+                <h3 class=" h6 caps m0">{{track.user.username}}
+                <i class="fa-fw fa fa-times pull-right" ng-click="removeTrack($event, $index)"></i>
+              </h3>
               <h2 class="h4 caps m0">{{track.title}}</h2>
             </div>
           </button>

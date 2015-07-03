@@ -82,6 +82,15 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
     });
   };
 
+  $scope.removeTrack = function(e, i) {
+    e.stopPropagation();
+    $scope.tracks.splice(i, 1);
+  };
+
+  $scope.createSet = function() {
+    debugger
+  };
+
   $scope.songs = [];
   // nextURL is the url that will be queried when a user scrolls low enough to
   // require more tracks appended to their stream.
