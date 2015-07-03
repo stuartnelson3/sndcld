@@ -85,16 +85,11 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
   $scope.songs = [];
   // nextURL is the url that will be queried when a user scrolls low enough to
   // require more tracks appended to their stream.
-  var nextURL;
   // keeps track if a user is looking at search or stream page
   // ideally these would be separate views and not require the state
   // maintainence, but i'm hacking quick
-  var onStream = true;
   $scope.getStream = function() {
     var url = '/stream';
-    if (onStream && nextURL) {
-      url = nextURL;
-    }
     // getting additional streams is 401'ing
     $http.get(url).then(function(payload) {
       var d = payload.data;
@@ -113,50 +108,25 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
           url: song.stream_url + "?client_id=" + this.client_id,
         };
       });
-      if (onStream) {
-        $scope.songs = $scope.songs.concat(songs);
-        return;
-      }
       $scope.songs = songs;
     });
   };
-
-  var debounce;
-  angular.element($window).bind("scroll", function() {
-    var html = document.querySelector("html");
-    var totalHeight = html.offsetHeight;
-    var songContainer = document.querySelector(".song-container");
-    var reloadThreshold = songContainer.offsetHeight * 8;
-
-    var reload = html.offsetHeight - (this.pageYOffset + this.innerHeight + reloadThreshold) < 0;
-    if (reload && onStream) {
-      $timeout.cancel(debounce);
-      debounce = $timeout($scope.getStream, 500);
-    }
-  });
 
   $scope.searchUsername = function(userPermalink) {
     $scope.searchText = 'tracks:'+userPermalink;
     $scope.searchSC({keyCode: 13}, $scope.searchText);
   };
 
-
   // $scope.searchText = 'likes:stuartnelson3';
   // $scope.searchSC({keyCode: 13}, $scope.searchText);
   // $scope.getStream();
 
-  $scope.addToMixTape = function(track) {
-    $scope.tracks.push(track);
-  };
-
   $scope.tracks = [];
 
   $scope.$on('csvUpload', function(e, tracks) {
-    debugger
-    // create a new search object for each track, each track has it's own
-    // resultant tracks and those are what get displayed with the search as the
-    // header
-    // tracks.forEach
+    $scope.$apply(function() {
+      $scope.playlist = tracks;
+    });
   });
 
 }]);

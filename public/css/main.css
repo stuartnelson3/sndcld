@@ -21,6 +21,7 @@ body {
   transition: right 0.5s;
   width: 12em;
   right: -14em;
+  top: 91px;
 }
 
 .sidebar.active {
