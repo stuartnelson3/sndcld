@@ -152,6 +152,10 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
     });
   });
 
+  $scope.$on('searchUser', function(e, username) {
+    $scope.searchUsername(username);
+  });
+
   $scope.loggedIn = false;
   $http.get("/check-auth").then(function(payload) {
     $scope.loggedIn = true;
