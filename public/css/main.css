@@ -31,3 +31,7 @@ body {
 .pointer {
   cursor: pointer;
 }
+
+.fast-transition {
+  transition: all 0.1s;
+}
