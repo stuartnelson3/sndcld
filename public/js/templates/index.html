@@ -1,11 +1,14 @@
 <header class="header z3 fixed top-0 left-0 right-0 white bg-blue">
   <i class="fa fa-cog fa-3 absolute left-0 p2 pointer" ng-click="login()"></i>
-  <input ng-class="{'not-visible': currentView === 'csv'}" class="sm-col-10 md-col-8 m1 field-light search-input" ng-model="searchText" ng-keyup="searchSC($event, searchText)" placeholder="Search" type="text">
-  <span class="absolute right-0 p1 pointer">
-    <button ng-click="setView('csv', $event)" class="btn btn-primary mb1 bg-orange white caps">CSV</button>
-    <button ng-click="setView('search', $event)" class="btn btn-primary mb1 bg-orange white caps">SEARCH</button>
+  <input ng-show="currentView === 'search'" class="sm-col-10 md-col-8 m1 field-light search-input" ng-model="searchText" ng-keyup="searchSC($event, searchText)" placeholder="Search" type="text">
+  <span ng-show="currentView === 'csv'" class="sm-col-10 md-col-8 relative">
+    <input disabled class="white lg-col-8 m1 field-light" ng-model="csvName" type="text">
+    <i ng-show="csvName" class="fa-fw fa fa-times absolute m2 right-0 pointer" ng-click="csvName = ''; playlist = []"></i>
   </span>
-  <i class="fa fa-bars fa-3 absolute right-0 p2 pointer" ng-click="sidebarActive = !sidebarActive"></i>
+  <span class="absolute right-0 p1 pointer">
+    <button ng-click="setView('csv', $event)" class="rounded btn btn-primary mb1 bg-orange white caps">CSV</button>
+    <button ng-click="setView('search', $event)" class="rounded btn btn-primary mb1 bg-orange white caps">SEARCH</button>
+  </span>
 </header>
 
 <div class="flex-auto sm-flex search-container">
@@ -42,37 +45,29 @@
 
     </div>
   </main>
-  <aside ng-class="{active: sidebarActive}" class="sidebar fixed px2">
-    <p>
-      <span class="caps mr1 js-setTitle" contenteditable class="js-setTitle">Mixtape</span>
-      <i class="fa fa-soundcloud pointer" ng-click="createSet()"></i>
-    </p>
-    <div plangular="">
-      <ul class="list-reset mr1">
-        <li ng-repeat="track in tracks track by $index">
-          <button
-            class="flex-none h4 button button-transparent button-grow rounded"
-            title="Play {{track.title}}"
-            ng-class="{'is-active': player.playing === track.src }"
-            ng-click="playPause($index)">
-            <div class="left-align">
-              <h3 class=" h6 caps m0">
-                {{track.user.username}}
-                <i class="fa-fw fa fa-times pull-right" ng-click="removeTrack($event, $index)"></i>
-              </h3>
-              <h2 class="h4 caps m0">{{track.title}}</h2>
-            </div>
-          </button>
-          <div class="flex-auto" ng-show="player.playing === track.src">
-            <progress
-              class="progress aqua"
-              ng-click="seek($event)"
-              ng-value="currentTime / duration || 0">
-              {{ currentTime / duration }}
-            </progress>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </aside>
 </div>
+<footer class="z3 white fixed bottom-0 left-0 right-0 border-top bg-footer" ng-show="tracks.length">
+  <div class="py1 px1">
+    <div class="clearfix">
+      <div class="col col-12" plangular="">
+        <div class="border-left playlist-container">
+          <button class="relative playlist-song p1 bg-darken-1 border-top border-bottom border-right btn btn-primary x-group-item" ng-repeat="track in tracks track by $index" ng-click="playPause($index)"
+            ng-class="{'bg-darken-3': player.playing === track.src }">
+            <img ng-src="{{ track.artwork_url  }}" alt="{{ track.title }}" />
+            <div class="left-align white">
+              <p class="playlist-text playlist-song-artist m0">{{track.user.username}}</p>
+              <p class="playlist-text playlist-song-title m0">{{track.title}}</p>
+            </div>
+            <i class="absolute right-0 top-0 fa-fw fa fa-times" ng-click="removeTrack($event, $index)"></i>
+          </button>
+        </div>
+        <progress
+          class="progress aqua"
+          ng-click="seek($event)"
+          ng-value="currentTime / duration || 0">
+          {{ currentTime / duration }}
+        </progress>
+      </div>
+    </div>
+  </div>
+</footer>

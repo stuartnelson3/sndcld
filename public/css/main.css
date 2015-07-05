@@ -1,5 +1,6 @@
 body {
   font-family: Avenir Next,Helvetica Neue,Helvetica,Arial,sans-serif;
+  overflow-x: hidden;
 }
 
 .header {
@@ -9,23 +10,11 @@ body {
 
 .search-container {
   margin-top: 80px;
-  margin-bottom: 80px;
+  margin-bottom: 250px;
 }
 
 .song-container {
   box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
-}
-
-
-.sidebar {
-  transition: right 0.5s;
-  width: 12em;
-  right: -14em;
-  top: 91px;
-}
-
-.sidebar.active {
-  right: 0;
 }
 
 .pointer {
@@ -36,6 +25,34 @@ body {
   transition: all 0.1s;
 }
 
-.not-visible {
-  visibility: hidden;
+.bg-footer {
+  background-color: #ccc;
+}
+
+.playlist-song {
+  width: 100px;
+}
+
+.progress {
+  border-radius: 0;
+  height: 2px;
+  margin: 1rem auto 0.5rem;
+  width: 99%;
+}
+
+.playlist-container {
+  white-space: nowrap;
+  overflow: scroll;
+}
+
+.playlist-text {
+  white-space: nowrap;
+}
+
+.playlist-song-artist {
+  font-size: 13px;
+}
+
+.playlist-song-title {
+  font-size: 10px;
 }

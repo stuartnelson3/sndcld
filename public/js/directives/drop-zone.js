@@ -49,14 +49,14 @@ angular.module('sndcld.directives').directive("dropZone", [function() {
                   });
                 }
               });
-              $scope.$emit('csvUpload', tracks);
+              $scope.$emit('csvUpload', tracks, f.name);
             };
             reader.onerror = function (evt) {
               alert("error reading file " + f.name);
             };
 
           } else {
-            alert("not a csv!")
+            alert("not a csv!");
           }
         }
       });

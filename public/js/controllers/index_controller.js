@@ -1,7 +1,7 @@
 angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$http', '$window', '$timeout', '$document', function($scope, $http, $window, $timeout, $document) {
   var soundcloudUrl = location.protocol + '//api.soundcloud.com/tracks';
 
-  $scope.currentView = 'csv';
+  $scope.currentView = 'search';
 
   $scope.login = function() {
     var form = document.createElement("form");
@@ -135,8 +135,8 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
     $scope.searchSC({keyCode: 13}, $scope.searchText);
   };
 
-  // $scope.searchText = 'likes:stuartnelson3';
-  // $scope.searchSC({keyCode: 13}, $scope.searchText);
+  $scope.searchText = 'likes:stuartnelson3';
+  $scope.searchSC({keyCode: 13}, $scope.searchText);
   // $scope.getStream();
 
   $scope.tracks = [];
@@ -145,9 +145,10 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
     $scope.currentView = view;
   };
 
-  $scope.$on('csvUpload', function(e, tracks) {
+  $scope.$on('csvUpload', function(e, tracks, csvName) {
     $scope.$apply(function() {
       $scope.playlist = tracks;
+      $scope.csvName = csvName;
     });
   });
 
