@@ -1,5 +1,15 @@
 <header class="header z3 fixed top-0 left-0 right-0 white bg-blue">
-  <i class="fa fa-cog fa-3 absolute left-0 p2 pointer" ng-click="login()"></i>
+  <div class="relative inline-block absolute left-0">
+    <i class="fa fa-cog fa-3 pointer p2" ng-click="showMenu = !showMenu"></i>
+    <div ng-show="showMenu && loggedIn" class="absolute left-0 mt1 p1 nowrap blue bg-white">
+      <img ng-src="{{ user.avatar_url  }}" alt="{{ user.username }}" />
+      <button type="button" class="block col-12 btn btn-primary bg-white black y-group-item">{{user.username}}</button>
+      <button ng-click="logout()" type="button" class="block col-12 btn btn-primary bg-white black y-group-item">logout</button>
+    </div>
+    <div ng-show="showMenu && !loggedIn" class="absolute left-0 mt1 p1 nowrap blue bg-white">
+      <button ng-click="login()" type="button" class="block col-12 btn btn-primary bg-white black y-group-item">Login</button>
+    </div>
+  </div>
   <input ng-show="currentView === 'search'" class="sm-col-10 md-col-8 m1 field-light search-input" ng-model="searchText" ng-keyup="searchSC($event, searchText)" placeholder="Search" type="text">
   <span ng-show="currentView === 'csv'" class="sm-col-10 md-col-8 relative">
     <input disabled class="white lg-col-8 m1 field-light" ng-model="csvName" type="text">

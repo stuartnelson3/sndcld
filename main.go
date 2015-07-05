@@ -18,6 +18,12 @@ import (
 
 var (
 	Version = "0.0.1"
+
+	soundcloudURLBase = "https://api.soundcloud.com/me"
+)
+
+const (
+	storeName = "sndcld"
 )
 
 func handleAuthorize(config *oauth2.Config, token string) http.HandlerFunc {
@@ -30,6 +36,7 @@ func handleOAuth2Callback(store *sessions.CookieStore, config *oauth2.Config, to
 	return func(w http.ResponseWriter, r *http.Request) {
 		if st := r.FormValue("state"); st != token {
 			http.Error(w, "Returned state token does not match.", 401)
+			return
 		}
 
 		t, err := config.Exchange(oauth2.NoContext, r.FormValue("code"))
@@ -37,7 +44,7 @@ func handleOAuth2Callback(store *sessions.CookieStore, config *oauth2.Config, to
 			http.Error(w, err.Error(), 500)
 		}
 
-		session, _ := store.Get(r, "sndcld")
+		session, _ := store.Get(r, storeName)
 
 		session.Values["token"] = t.AccessToken
 		session.Save(r, w)
@@ -45,6 +52,35 @@ func handleOAuth2Callback(store *sessions.CookieStore, config *oauth2.Config, to
 		f, _ := os.Open("./layout.html")
 		io.Copy(w, f)
 		f.Close()
+	}
+}
+
+func checkAuth(store *sessions.CookieStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		session, _ := store.Get(r, storeName)
+
+		t, ok := session.Values["token"]
+		if !ok || t == "" {
+			http.Error(w, "Nothing stored in session.", 401)
+			return
+		}
+
+		resp, err := http.Get(fmt.Sprintf("%s?oauth_token=%s", soundcloudURLBase, t.(string)))
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+		}
+		defer resp.Body.Close()
+
+		io.Copy(w, resp.Body)
+	}
+}
+
+func logout(store *sessions.CookieStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		session, _ := store.Get(r, storeName)
+		session.Values["email"] = ""
+		session.Values["token"] = ""
+		session.Save(r, w)
 	}
 }
 
@@ -61,14 +97,14 @@ func index(id string) http.HandlerFunc {
 
 func getStream(store *sessions.CookieStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		session, _ := store.Get(r, "sndcld")
+		session, _ := store.Get(r, storeName)
 
 		t, ok := session.Values["token"]
 		if !ok {
 			http.Error(w, "No token in session", 500)
 		}
 
-		resp, err := http.Get(fmt.Sprintf("https://api.soundcloud.com/me/activities?limit=25&oauth_token=%s", t.(string)))
+		resp, err := http.Get(fmt.Sprintf("%s/activities?limit=25&oauth_token=%s", soundcloudURLBase, t.(string)))
 		if err != nil {
 			http.Error(w, "No token in session", 500)
 		}
@@ -79,20 +115,23 @@ func getStream(store *sessions.CookieStore) http.HandlerFunc {
 }
 
 type playlist struct {
-	Title  string `json:"title"`
-	Tracks []int  `json:"tracks"`
+	Title   string `json:"title"`
+	Tracks  []int  `json:"tracks"`
+	Sharing string `json:"sharing"`
 }
 
 func createSet(store *sessions.CookieStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		session, _ := store.Get(r, "sndcld")
+		session, _ := store.Get(r, storeName)
 
 		t, ok := session.Values["token"]
 		if !ok {
 			http.Error(w, "no token in session", 500)
 		}
 
-		b := playlist{}
+		b := playlist{
+			Sharing: "public",
+		}
 		json.NewDecoder(r.Body).Decode(&b)
 
 		u := fmt.Sprintf("https://api.soundcloud.com/me/playlists?oauth_token=%s\n", t.(string))
@@ -105,10 +144,17 @@ func createSet(store *sessions.CookieStore) http.HandlerFunc {
 			http.Error(w, "failed to marshal json", 500)
 		}
 
-		bodyType := "application/x-www-form-urlencoded"
-		req, err := http.NewRequest("POST", u, buf)
+		// bodyType := "application/x-www-form-urlencoded"
+		bodyType := "application/json"
+		req, err := http.NewRequest("PUT", u, buf)
 		req.Header.Set("Content-Type", bodyType)
+
 		// out, err := httputil.DumpRequestOut(req, true)
+		// if err != nil {
+		// 	http.Error(w, "failed to create playlist", 500)
+		// }
+		// io.Copy(os.Stdout, bytes.NewReader(out))
+
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
 			http.Error(w, "failed to create playlist", 500)
@@ -125,7 +171,7 @@ func main() {
 		clientSecret  = flag.String("client-secret", "", "soundcloud client secret")
 		port          = flag.String("port", "3000", "address to bind the server on")
 		callbackToken = flag.String("callback-token", "testToken", "OAuth token used to protect against CSRF attacks")
-		appURL        = flag.String("app-url", "http://localhost:3000", "url of the app")
+		appURL        = flag.String("app-url", "http://import-cloud/", "url of the app")
 		store         = sessions.NewCookieStore([]byte("secret key"))
 	)
 	flag.Parse()
@@ -149,9 +195,11 @@ func main() {
 	})
 
 	m.Post("/create-set", createSet(store))
+	m.Get("/check-auth", checkAuth(store))
 	m.Get("/stream", getStream(store))
 	m.Get("/oauth2callback", handleOAuth2Callback(store, config, *callbackToken))
 	m.Post("/authorize", handleAuthorize(config, *callbackToken))
+	m.Post("/logout", logout(store))
 	m.Get("/", index(*clientID))
 
 	handler := handlers.CompressHandler(handlers.LoggingHandler(os.Stdout, m))

@@ -2,6 +2,7 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
   var soundcloudUrl = location.protocol + '//api.soundcloud.com/tracks';
 
   $scope.currentView = 'search';
+  $scope.showMenu = false;
 
   $scope.login = function() {
     var form = document.createElement("form");
@@ -96,7 +97,6 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
       tracks: $scope.tracks.map(function(t) { return t.id; })
     };
     $http.post(url, data).then(function(payload) {
-      debugger
     });
   };
 
@@ -151,5 +151,18 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
       $scope.csvName = csvName;
     });
   });
+
+  $scope.loggedIn = false;
+  $http.get("/check-auth").then(function(payload) {
+    $scope.loggedIn = true;
+    $scope.user = payload.data;
+  });
+
+  $scope.logout = function() {
+    $http.post("/logout").then(function() {
+      $scope.user = {};
+      $scope.loggedIn = false;
+    });
+  };
 
 }]);
