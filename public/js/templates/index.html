@@ -1,27 +1,45 @@
 <header class="header z3 fixed top-0 left-0 right-0 white bg-blue">
   <i class="fa fa-cog fa-3 absolute left-0 p2 pointer" ng-click="login()"></i>
-  <input class="sm-col-10 md-col-8 m1 field-light search-input" ng-model="searchText" ng-keyup="searchSC($event, searchText)" placeholder="Search" type="text">
+  <input ng-class="{'not-visible': currentView === 'csv'}" class="sm-col-10 md-col-8 m1 field-light search-input" ng-model="searchText" ng-keyup="searchSC($event, searchText)" placeholder="Search" type="text">
+  <span class="absolute right-0 p1 pointer">
+    <button ng-click="setView('csv', $event)" class="btn btn-primary mb1 bg-orange white caps">CSV</button>
+    <button ng-click="setView('search', $event)" class="btn btn-primary mb1 bg-orange white caps">SEARCH</button>
+  </span>
   <i class="fa fa-bars fa-3 absolute right-0 p2 pointer" ng-click="sidebarActive = !sidebarActive"></i>
 </header>
 
 <div class="flex-auto sm-flex search-container">
   <main class="clearfix mxn2 flex-auto">
     <div class="sm-col-10 md-col-8 mx-auto">
-      <div class="border" ng-if="!playlist.length">
-        <drop-zone></drop-zone>
-      </div>
 
-      <div ng-repeat="s in playlist track by $index">
-        <h3 class="h6 caps m2 inline-block"
-          ng-click="s.hide = !s.hide;"
-          ng-class="{'gray': s.empty || s.hide, 'black': !s.hide, 'pointer': !s.empty}"
-          ><i ng-class="{'fa-rotate-90': !s.hide}" class="fa-fw fa fa-caret-right fast-transition"></i> {{s.artist}} &mdash; {{s.title}}</h3>
-        <div class="border" ng-hide="s.empty || s.hide">
-          <song-search song="::s" tracks="tracks"></song-search>
+      <!-- csv view -->
+      <span ng-show="currentView === 'csv'">
+        <div class="border" ng-if="!playlist.length">
+          <drop-zone></drop-zone>
         </div>
-      </div>
 
-      </div>
+        <div ng-repeat="s in playlist track by $index">
+          <h3 class="h6 caps m2 inline-block"
+            ng-click="s.hide = !s.hide;"
+            ng-class="{'gray': s.empty || s.hide, 'black': !s.hide, 'pointer': !s.empty}"
+            ><i ng-class="{'fa-rotate-90': !s.hide}" class="fa-fw fa fa-caret-right fast-transition"></i> {{s.artist}} &mdash; {{s.title}}</h3>
+          <div class="border" ng-hide="s.empty || s.hide">
+            <song-search song="::s" tracks="tracks"></song-search>
+          </div>
+        </div>
+      </span>
+      <!-- csv view -->
+
+      <!-- search view -->
+      <span ng-show="currentView === 'search'">
+        <div class="border" ng-show="songs.length">
+          <div class="song-container px1 bg-white border-bottom" ng-repeat="s in songs track by $index">
+            <song song="::s" tracks="tracks"></song-search>
+          </div>
+        </div>
+      </span>
+      <!-- search view -->
+
     </div>
   </main>
   <aside ng-class="{active: sidebarActive}" class="sidebar fixed px2">

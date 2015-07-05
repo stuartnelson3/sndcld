@@ -35,3 +35,7 @@ body {
 .fast-transition {
   transition: all 0.1s;
 }
+
+.not-visible {
+  visibility: hidden;
+}

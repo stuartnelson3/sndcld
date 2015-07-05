@@ -1,6 +1,8 @@
 angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$http', '$window', '$timeout', '$document', function($scope, $http, $window, $timeout, $document) {
   var soundcloudUrl = location.protocol + '//api.soundcloud.com/tracks';
 
+  $scope.currentView = 'csv';
+
   $scope.login = function() {
     var form = document.createElement("form");
     form.action = "/authorize";
@@ -138,6 +140,10 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
   // $scope.getStream();
 
   $scope.tracks = [];
+
+  $scope.setView = function(view, ev) {
+    $scope.currentView = view;
+  };
 
   $scope.$on('csvUpload', function(e, tracks) {
     $scope.$apply(function() {
