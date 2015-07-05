@@ -39,12 +39,15 @@ angular.module('sndcld.directives').directive("dropZone", [function() {
             reader.onload = function (evt) {
               var rows = evt.target.result.split("\n");
               var body = rows.slice(1);
-              var tracks = body.map(function(r) {
+              var tracks = [];
+              body.forEach(function(r) {
                 var d = r.replace(/"/g, "").split(",");
-                return {
-                  title: d[1],
-                  artist: d[2]
-                };
+                if (d[1] && d[2]) {
+                  tracks.push({
+                    title: d[1],
+                    artist: d[2]
+                  });
+                }
               });
               $scope.$emit('csvUpload', tracks);
             };
