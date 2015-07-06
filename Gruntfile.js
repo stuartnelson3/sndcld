@@ -54,6 +54,7 @@ module.exports = function(grunt) {
         run_flags: [
           '--port', '3000',
           '--client-id', '1182e08b0415d770cfb0219e80c839e8',
+          '--client-secret', '827d161f269e4da5de1f3fdca7de3c45',
         ]
       }
     },

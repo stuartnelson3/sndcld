@@ -8,6 +8,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 
 	"github.com/gorilla/context"
@@ -138,26 +140,25 @@ func createSet(store *sessions.CookieStore) http.HandlerFunc {
 		}
 		json.NewDecoder(r.Body).Decode(&b)
 
-		u := fmt.Sprintf("https://api.soundcloud.com/me/playlists?oauth_token=%s\n", t.(string))
-		values := map[string]playlist{
-			"playlist": b,
-		}
-		buf := new(bytes.Buffer)
-		err := json.NewEncoder(buf).Encode(values)
+		u, err := url.Parse(soundcloudURLBase)
 		if err != nil {
-			http.Error(w, "failed to marshal json", 500)
+			http.Error(w, "error parsing url", 500)
 		}
 
-		// bodyType := "application/x-www-form-urlencoded"
-		bodyType := "application/json"
-		req, err := http.NewRequest("PUT", u, buf)
-		req.Header.Set("Content-Type", bodyType)
+		v := u.Query()
+		// playlist[title]=title&playlist[tracks][]=123&playlist[tracks][]=123&playlist[tracks][]=123&playlist[sharing]=public
+		v.Set("oauth_token", t.(string))
+		v.Set("playlist[title]", b.Title)
+		v.Set("playlist[sharing]", b.Sharing)
 
-		// out, err := httputil.DumpRequestOut(req, true)
-		// if err != nil {
-		// 	http.Error(w, "failed to create playlist", 500)
-		// }
-		// io.Copy(os.Stdout, bytes.NewReader(out))
+		for _, id := range b.Tracks {
+			v.Add("playlist[tracks][]", fmt.Sprintf(`{"id":%d}`, id))
+		}
+
+		u.RawQuery = v.Encode()
+
+		req, _ := http.NewRequest("POST", u.String(), nil) //strings.NewReader(data.Encode()))
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
@@ -165,7 +166,8 @@ func createSet(store *sessions.CookieStore) http.HandlerFunc {
 		}
 		defer resp.Body.Close()
 
-		io.Copy(os.Stdout, resp.Body)
+		out, err := httputil.DumpResponse(resp, true)
+		io.Copy(os.Stdout, bytes.NewReader(out))
 	}
 }
 
@@ -185,7 +187,7 @@ func main() {
 		ClientSecret: *clientSecret,
 		RedirectURL:  *appURL + "/oauth2callback",
 		Scopes: []string{
-			"non-expiring",
+			"non-expiring", // need to get "*" to work
 		},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://soundcloud.com/connect",

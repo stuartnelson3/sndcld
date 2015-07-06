@@ -56,3 +56,7 @@ body {
 .playlist-song-title {
   font-size: 10px;
 }
+
+.create-set {
+  bottom: 300px;
+}

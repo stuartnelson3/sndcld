@@ -90,10 +90,11 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
     $scope.tracks.splice(i, 1);
   };
 
+  $scope.setTitle = "My New Set";
   $scope.createSet = function() {
     var url = '/create-set';
     var data = {
-      title: $(".js-setTitle").text(),
+      title: $scope.setTitle,
       tracks: $scope.tracks.map(function(t) { return t.id; })
     };
     $http.post(url, data).then(function(payload) {

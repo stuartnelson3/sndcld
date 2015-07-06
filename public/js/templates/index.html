@@ -56,6 +56,14 @@
     </div>
   </main>
 </div>
+
+<div ng-show="tracks.length && loggedIn" class="fixed left-0 create-set">
+  <div class="absolute left-0 p1 nowrap blue bg-white border">
+    <input type="text" class="m1 field-light" ng-model="setTitle" />
+    <button ng-click="createSet()" type="button" class="pointer block col-12 btn btn-primary bg-white black y-group-item">create set</button>
+  </div>
+</div>
+
 <footer class="z3 white fixed bottom-0 left-0 right-0 border-top bg-footer" ng-show="tracks.length">
   <div class="py1 px1">
     <div class="clearfix">
