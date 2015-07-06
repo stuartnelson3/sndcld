@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/pat"
@@ -179,7 +180,7 @@ func main() {
 	config := &oauth2.Config{
 		ClientID:     *clientID,
 		ClientSecret: *clientSecret,
-		RedirectURL:  *appURL + "/oauth2callback",
+		RedirectURL:  path.Join(*appURL, "/oauth2callback"),
 		Scopes: []string{
 			"non-expiring",
 		},
