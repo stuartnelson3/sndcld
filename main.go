@@ -9,8 +9,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
 
+	"github.com/gorilla/context"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/pat"
 	"github.com/gorilla/sessions"
@@ -45,7 +45,11 @@ func handleOAuth2Callback(store *sessions.CookieStore, config *oauth2.Config, to
 			http.Error(w, err.Error(), 500)
 		}
 
-		session, _ := store.Get(r, storeName)
+		session, err := store.Get(r, storeName)
+		if err != nil {
+			http.Error(w, err.Error(), 401)
+			return
+		}
 
 		session.Values["token"] = t.AccessToken
 		session.Save(r, w)
@@ -79,7 +83,6 @@ func checkAuth(store *sessions.CookieStore) http.HandlerFunc {
 func logout(store *sessions.CookieStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		session, _ := store.Get(r, storeName)
-		session.Values["email"] = ""
 		session.Values["token"] = ""
 		session.Save(r, w)
 	}
@@ -172,7 +175,7 @@ func main() {
 		clientSecret  = flag.String("client-secret", "", "soundcloud client secret")
 		port          = flag.String("port", "3000", "address to bind the server on")
 		callbackToken = flag.String("callback-token", "testToken", "OAuth token used to protect against CSRF attacks")
-		appURL        = flag.String("app-url", "http://import-cloud/", "url of the app")
+		appURL        = flag.String("app-url", "http://localhost:3000", "url of the app")
 		store         = sessions.NewCookieStore([]byte("secret key"))
 	)
 	flag.Parse()
@@ -180,7 +183,7 @@ func main() {
 	config := &oauth2.Config{
 		ClientID:     *clientID,
 		ClientSecret: *clientSecret,
-		RedirectURL:  path.Join(*appURL, "/oauth2callback"),
+		RedirectURL:  *appURL + "/oauth2callback",
 		Scopes: []string{
 			"non-expiring",
 		},
@@ -204,6 +207,7 @@ func main() {
 	m.Get("/", index(*clientID))
 
 	handler := handlers.CompressHandler(handlers.LoggingHandler(os.Stdout, m))
+	handler = context.ClearHandler(handler)
 	log.Printf("api %s listening on %s\n", Version, *port)
 	log.Fatal(http.ListenAndServe(":"+*port, handler))
 }
