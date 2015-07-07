@@ -1,7 +1,36 @@
 angular.module('sndcld.directives').directive("dropZone", [function() {
+  var parseCSV = function(scope, name) {
+    return function (evt) {
+      var rows = evt.target.result.split("\n").map(function(e) { return e.replace(/"/g, "").split(","); });
+      // rows is mutate and now is just the track data rows
+      var header = rows.shift();
+      var trackIDX = header.indexOf("Track Name");
+      var artistIDX = header.indexOf("Artist Name");
+      var tracks = [];
+      rows.forEach(function(d) {
+        var title = d[trackIDX];
+        var artist = d[artistIDX];
+        if (title && artist) {
+          tracks.push({
+            title: title,
+            artist: artist
+          });
+        }
+      });
+      scope.$emit('csvUpload', tracks, name);
+    };
+  };
+
+  var alertError = function(name) {
+    return function (evt) {
+      alert("error reading file " + f.name);
+    };
+  };
+
   return {
     restrict: 'E',
     link: function($scope, elem, attr) {
+
       elem.bind('dragover', function (e) {
         e.stopPropagation();
         e.preventDefault();
@@ -36,24 +65,8 @@ angular.module('sndcld.directives').directive("dropZone", [function() {
           if (ext === "csv") {
             var reader = new FileReader();
             reader.readAsText(f, "UTF-8");
-            reader.onload = function (evt) {
-              var rows = evt.target.result.split("\n");
-              var body = rows.slice(1);
-              var tracks = [];
-              body.forEach(function(r) {
-                var d = r.replace(/"/g, "").split(",");
-                if (d[1] && d[2]) {
-                  tracks.push({
-                    title: d[1],
-                    artist: d[2]
-                  });
-                }
-              });
-              $scope.$emit('csvUpload', tracks, f.name);
-            };
-            reader.onerror = function (evt) {
-              alert("error reading file " + f.name);
-            };
+            reader.onload = parseCSV($scope, f.name);
+            reader.onerror = alertError(f.name);
 
           } else {
             alert("not a csv!");
