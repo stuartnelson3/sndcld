@@ -107,9 +107,12 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
   // keeps track if a user is looking at search or stream page
   // ideally these would be separate views and not require the state
   // maintainence, but i'm hacking quick
-  $scope.getStream = function() {
+  $scope.getStream = function(ev) {
+    $scope.searchText = '';
+    $scope.setView('search', ev);
     var url = '/stream';
     // getting additional streams is 401'ing
+    $scope.songs = [];
     $http.get(url).then(function(payload) {
       var d = payload.data;
       nextURL = d.next_href;

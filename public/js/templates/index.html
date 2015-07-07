@@ -4,6 +4,7 @@
     <div ng-show="showMenu && loggedIn" class="absolute left-0 mt1 p1 nowrap blue bg-white">
       <img ng-src="{{ user.avatar_url  }}" alt="{{ user.username }}" />
       <button type="button" class="block col-12 btn btn-primary bg-white black y-group-item">{{user.username}}</button>
+      <button ng-click="getStream($event)" class="block col-12 btn btn-primary bg-orange white rounded y-group-item">stream</button>
       <button ng-click="logout()" type="button" class="block col-12 btn btn-primary bg-white black y-group-item">logout</button>
     </div>
     <div ng-show="showMenu && !loggedIn" class="absolute left-0 mt1 p1 nowrap blue bg-white">
@@ -69,7 +70,7 @@
     <div class="clearfix">
       <div class="col col-12" plangular="">
         <div class="border-left playlist-container">
-          <button class="relative playlist-song p1 bg-darken-1 border-top border-bottom border-right btn btn-primary x-group-item" ng-repeat="track in tracks track by $index" ng-click="playPause($index)"
+          <button class="relative playlist-song p1 bg-darken-1 border btn btn-primary x-group-item" ng-repeat="track in tracks track by $index" ng-click="playPause($index)"
             ng-class="{'bg-darken-3': player.playing === track.src }">
             <img ng-src="{{ track.artwork_url  }}" alt="{{ track.title }}" />
             <div class="left-align white">
