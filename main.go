@@ -1,14 +1,12 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"os"
 
@@ -38,18 +36,18 @@ func handleAuthorize(config *oauth2.Config, token string) http.HandlerFunc {
 func handleOAuth2Callback(store *sessions.CookieStore, config *oauth2.Config, token string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if st := r.FormValue("state"); st != token {
-			http.Error(w, "Returned state token does not match.", 401)
+			http.Error(w, "returned state token does not match", http.StatusUnauthorized)
 			return
 		}
 
 		t, err := config.Exchange(oauth2.NoContext, r.FormValue("code"))
 		if err != nil {
-			http.Error(w, err.Error(), 500)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
 		session, err := store.Get(r, storeName)
 		if err != nil {
-			http.Error(w, err.Error(), 401)
+			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
@@ -68,13 +66,13 @@ func checkAuth(store *sessions.CookieStore) http.HandlerFunc {
 
 		t, ok := session.Values["token"]
 		if !ok || t == "" {
-			http.Error(w, "Nothing stored in session.", 401)
+			http.Error(w, "nothing stored in session", http.StatusUnauthorized)
 			return
 		}
 
 		resp, err := http.Get(fmt.Sprintf("%s?oauth_token=%s", soundcloudURLBase, t.(string)))
 		if err != nil {
-			http.Error(w, err.Error(), 500)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		defer resp.Body.Close()
 
@@ -94,7 +92,7 @@ func index(id string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		f, err := os.Open("./layout.html")
 		if err != nil {
-			http.Error(w, "Failed to load layout.html.", 500)
+			http.Error(w, "failed to load layout.html", http.StatusInternalServerError)
 		}
 		io.Copy(w, f)
 		f.Close()
@@ -107,12 +105,12 @@ func getStream(store *sessions.CookieStore) http.HandlerFunc {
 
 		t, ok := session.Values["token"]
 		if !ok {
-			http.Error(w, "No token in session", 500)
+			http.Error(w, "no token in session", http.StatusUnauthorized)
 		}
 
 		resp, err := http.Get(fmt.Sprintf("%s/activities?limit=25&oauth_token=%s", soundcloudURLBase, t.(string)))
 		if err != nil {
-			http.Error(w, "No token in session", 500)
+			http.Error(w, "no token in session", http.StatusUnauthorized)
 		}
 		defer resp.Body.Close()
 
@@ -132,7 +130,7 @@ func createSet(store *sessions.CookieStore) http.HandlerFunc {
 
 		t, ok := session.Values["token"]
 		if !ok {
-			http.Error(w, "no token in session", 500)
+			http.Error(w, "no token in session", http.StatusUnauthorized)
 		}
 
 		b := playlist{
@@ -142,7 +140,7 @@ func createSet(store *sessions.CookieStore) http.HandlerFunc {
 
 		u, err := url.Parse(soundcloudURLBase)
 		if err != nil {
-			http.Error(w, "error parsing url", 500)
+			http.Error(w, "error parsing url", http.StatusInternalServerError)
 		}
 		u.Path = "/playlists"
 
@@ -163,12 +161,17 @@ func createSet(store *sessions.CookieStore) http.HandlerFunc {
 
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
-			http.Error(w, "failed to create playlist", 500)
+			http.Error(w, "failed to create playlist", http.StatusInternalServerError)
+			return
 		}
 		defer resp.Body.Close()
 
-		out, err := httputil.DumpResponse(resp, true)
-		io.Copy(os.Stdout, bytes.NewReader(out))
+		if resp.StatusCode != http.StatusCreated {
+			http.Error(w, "failed to create playlist", resp.StatusCode)
+			return
+		}
+
+		json.NewEncoder(w).Encode(map[string]string{"result": "success"})
 	}
 }
 
