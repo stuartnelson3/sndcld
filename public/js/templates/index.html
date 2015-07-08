@@ -2,8 +2,8 @@
   <div class="relative inline-block absolute left-0">
     <i class="fa fa-cog fa-3 pointer p2" ng-click="showMenu = !showMenu"></i>
     <div ng-show="showMenu && loggedIn" class="absolute left-0 mt1 p1 nowrap blue bg-white">
-      <img ng-src="{{ user.avatar_url  }}" alt="{{ user.username }}" />
-      <button type="button" class="block col-12 btn btn-primary bg-white black y-group-item">{{user.username}}</button>
+      <a href="{{ user.permalink_url }}" target="_blank"><img ng-src="{{ user.avatar_url  }}" alt="{{ user.username }}" /></a>
+      <a href="{{ user.permalink_url }}" target="_blank"><button type="button" class="block col-12 btn btn-primary bg-white black y-group-item">{{user.username}}</button></a>
       <button ng-click="getStream($event)" class="block col-12 btn btn-primary bg-orange white rounded y-group-item">stream</button>
       <button ng-click="logout()" type="button" class="block col-12 btn btn-primary bg-white black y-group-item">logout</button>
     </div>
