@@ -38,6 +38,8 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
     }
 
     var promise;
+    $scope.songs = [];
+    $scope.sets = [];
 
     // looking for user likes/tracks
     var re = /(\w+):(.+)/;
@@ -51,28 +53,23 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
         var m = match[2].match(re);
         var user = match[2];
         var path = match[1].trim();
-        var singleSet = false;
         if (m) {
            user = m[1];
            if (m[2]) {
-             singleSet = true;
              path += "/" + m[2].trim();
            }
         }
-        promise = resolve({url: user.trim()+"/"+path}).then(function(payload) {
-          if (singleSet) {
-            return {data: payload.data.tracks};
-          }
-          var ts = payload.data.map(function(set) { return set.tracks; });
-          var tracks = [].concat.apply([], ts);
-          return {data: tracks};
+        resolve({url: user.trim()+"/"+path}).then(function(payload) {
+          // single sets are returned as just as object.
+          // wrap it in an array and flatten so that it can
+          // be treated the same as an array of sets.
+          $scope.sets = [].concat.apply([], [payload.data]);
         });
-        break;
+        return;
       default:
         promise = search(searchText);
     }
 
-    $scope.songs = [];
     promise.then(function(payload) {
       var songs = payload.data;
       songs.forEach(function(song) {

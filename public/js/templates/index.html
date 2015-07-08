@@ -51,6 +51,19 @@
             <song song="::s" tracks="tracks"></song-search>
           </div>
         </div>
+
+        <div ng-repeat="s in sets track by $index">
+          <h3 class="h6 caps m2 inline-block"
+            ng-click="s.hide = !s.hide;"
+            ng-class="{'gray': s.empty || s.hide, 'black': !s.hide, 'pointer': !s.empty}"
+            ><i ng-class="{'fa-rotate-90': !s.hide}" class="fa-fw fa fa-caret-right fast-transition"></i>{{s.title}}</h3>
+          <div class="border" ng-hide="s.empty || s.hide">
+            <div class="song-container px1 bg-white border-bottom" ng-repeat="track in s.tracks track by $index">
+              <song song="::track" tracks="tracks"></song-search>
+            </div>
+          </div>
+        </div>
+
       </span>
       <!-- search view -->
 
