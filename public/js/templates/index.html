@@ -73,7 +73,7 @@
   <div class="py1 px1">
     <div class="clearfix">
       <div class="col col-12" plangular="">
-        <div class="border-left playlist-container">
+        <div class="playlist-container">
           <button class="relative playlist-song p1 bg-darken-1 border btn btn-primary x-group-item" ng-repeat="track in tracks track by $index" ng-click="playPause($index)"
             ng-class="{'bg-darken-3': player.playing === track.src }">
             <img ng-src="{{ track.artwork_url  }}" alt="{{ track.title }}" />
