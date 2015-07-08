@@ -144,15 +144,16 @@ func createSet(store *sessions.CookieStore) http.HandlerFunc {
 		if err != nil {
 			http.Error(w, "error parsing url", 500)
 		}
+		u.Path = "/playlists"
 
 		v := u.Query()
-		// playlist[title]=title&playlist[tracks][]=123&playlist[tracks][]=123&playlist[tracks][]=123&playlist[sharing]=public
+		// playlist[title]=title&playlist[tracks][][id]=123&playlist[tracks][][id]=123&playlist[tracks][][id]=123&playlist[sharing]=public
 		v.Set("oauth_token", t.(string))
 		v.Set("playlist[title]", b.Title)
 		v.Set("playlist[sharing]", b.Sharing)
 
 		for _, id := range b.Tracks {
-			v.Add("playlist[tracks][]", fmt.Sprintf(`{"id":%d}`, id))
+			v.Add("playlist[tracks][][id]", fmt.Sprintf("%d", id))
 		}
 
 		u.RawQuery = v.Encode()
