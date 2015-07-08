@@ -61,7 +61,11 @@
 <div ng-show="tracks.length && loggedIn" class="fixed left-0 create-set">
   <div class="absolute left-0 p1 nowrap blue bg-white border">
     <input type="text" class="m1 field-light" ng-model="setTitle" />
-    <button ng-click="createSet()" type="button" class="pointer block col-12 btn btn-primary bg-white black y-group-item">create set</button>
+    <button ng-click="createSet()" type="button" class="pointer block col-12 btn btn-primary bg-white black y-group-item">
+      <span ng-show="!uploadingSet">create set</span>
+      <span ng-show="uploadingSet">uploading set</span>
+      <i ng-show="uploadingSet" class="fa fa-circle-o-notch fa-spin pull-right"></i>
+    </button>
   </div>
 </div>
 

@@ -97,7 +97,12 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
       title: $scope.setTitle,
       tracks: $scope.tracks.map(function(t) { return t.id; })
     };
-    $http.post(url, data).then(function(payload) {
+    $scope.uploadingSet = true;
+    $http.post(url, data).then(function(payload) {}, function(payload) {
+      alert('error creating playlist');
+      console.log(payload);
+    }).finally(function() {
+      $scope.uploadingSet = false;
     });
   };
 
