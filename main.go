@@ -88,15 +88,13 @@ func logout(store *sessions.CookieStore) http.HandlerFunc {
 	}
 }
 
-func index(id string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		f, err := os.Open("./layout.html")
-		if err != nil {
-			http.Error(w, "failed to load layout.html", http.StatusInternalServerError)
-		}
-		io.Copy(w, f)
-		f.Close()
+func index(w http.ResponseWriter, r *http.Request) {
+	f, err := os.Open("./layout.html")
+	if err != nil {
+		http.Error(w, "failed to load layout.html", http.StatusInternalServerError)
 	}
+	io.Copy(w, f)
+	f.Close()
 }
 
 func getStream(store *sessions.CookieStore) http.HandlerFunc {
@@ -210,7 +208,7 @@ func main() {
 	m.Get("/oauth2callback", handleOAuth2Callback(store, config, *callbackToken))
 	m.Post("/authorize", handleAuthorize(config, *callbackToken))
 	m.Post("/logout", logout(store))
-	m.Get("/", index(*clientID))
+	m.Get("/", index)
 
 	handler := handlers.CompressHandler(handlers.LoggingHandler(os.Stdout, m))
 	handler = context.ClearHandler(handler)
