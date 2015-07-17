@@ -156,7 +156,7 @@ func createSet(store *sessions.CookieStore) http.HandlerFunc {
 
 		u.RawQuery = v.Encode()
 
-		req, _ := http.NewRequest("POST", u.String(), nil) //strings.NewReader(data.Encode()))
+		req, _ := http.NewRequest("POST", u.String(), nil)
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 		resp, err := http.DefaultClient.Do(req)
@@ -191,7 +191,7 @@ func main() {
 		ClientSecret: *clientSecret,
 		RedirectURL:  *appURL + "/oauth2callback",
 		Scopes: []string{
-			"non-expiring", // need to get "*" to work
+			"non-expiring",
 		},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://soundcloud.com/connect",
