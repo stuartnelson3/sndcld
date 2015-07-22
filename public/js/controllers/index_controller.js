@@ -1,4 +1,4 @@
-angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$http', '$window', '$timeout', '$document', function($scope, $http, $window, $timeout, $document) {
+angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$http', '$window', '$timeout', '$document', 'TrackStorage', function($scope, $http, $window, $timeout, $document, TrackStorage) {
   var soundcloudUrl = location.protocol + '//api.soundcloud.com/tracks';
 
   $scope.currentView = 'search';
@@ -85,6 +85,7 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
   $scope.removeTrack = function(e, i) {
     e.stopPropagation();
     $scope.tracks.splice(i, 1);
+    TrackStorage.set($scope.tracks);
   };
 
   $scope.setTitle = "My New Set";
@@ -145,7 +146,7 @@ angular.module('sndcld.controllers').controller('IndexController', ['$scope', '$
   $scope.searchSC({keyCode: 13}, $scope.searchText);
   // $scope.getStream();
 
-  $scope.tracks = [];
+  $scope.tracks = TrackStorage.tracks();
 
   $scope.setView = function(view, ev) {
     $scope.currentView = view;

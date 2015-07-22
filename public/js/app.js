@@ -1,8 +1,9 @@
 angular.module('sndcld.resources', []);
+angular.module('sndcld.services', []);
 angular.module('sndcld.controllers', []);
 angular.module('sndcld.directives', []);
 
-var app = angular.module('sndcld', ['ngRoute', 'plangular', 'sndcld.resources', 'sndcld.controllers', 'sndcld.directives']);
+var app = angular.module('sndcld', ['ngRoute', 'plangular', 'sndcld.resources', 'sndcld.controllers', 'sndcld.directives', 'sndcld.services']);
 app.run(['$rootScope', '$location', '$route', function($rootScope, $location, $route) {}]);
 
 app.config(['$routeProvider', '$locationProvider', 'plangularConfigProvider',

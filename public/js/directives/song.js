@@ -1,4 +1,4 @@
-angular.module('sndcld.directives').directive("song", ['$http', function($http) {
+angular.module('sndcld.directives').directive("song", ['$http', 'TrackStorage', function($http, TrackStorage) {
   return {
     restrict: 'E',
     scope: {
@@ -8,6 +8,7 @@ angular.module('sndcld.directives').directive("song", ['$http', function($http) 
     link: function($scope, elem, attr) {
       $scope.addToMixTape = function(track) {
         $scope.tracks.push(track);
+        TrackStorage.set($scope.tracks);
       };
 
       $scope.searchUsername = function(username) {
